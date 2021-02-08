@@ -1,15 +1,15 @@
+import _ from 'lodash';
+import moment from 'moment';
 import React, {useState, Fragment} from 'react';
 import {StyleSheet, View, ScrollView, Text, TouchableOpacity} from 'react-native';
 import {Calendar} from 'react-native-calendars';
-import moment from 'moment';
-import _ from 'lodash';
 
 const testIDs = require('../testIDs');
 
 const CalendarsScreen = () => {
   const [selected, setSelected] = useState('');
 
-  const onDayPress = (day) => {
+  const onDayPress = day => {
     setSelected(day.dateString);
   };
 
@@ -17,6 +17,7 @@ const CalendarsScreen = () => {
     const disabledDates = {};
     const start = moment(startDate);
     const end = moment(endDate);
+
     for (let m = moment(start); m.diff(end, 'days') <= 0; m.add(1, 'days')) {
       if (_.includes(daysToDisable, m.weekday())) {
         disabledDates[m.format('YYYY-MM-DD')] = {disabled: true};
@@ -33,15 +34,14 @@ const CalendarsScreen = () => {
           testID={testIDs.calendars.FIRST}
           current={'2020-02-02'}
           style={styles.calendar}
-          hideExtraDays
           onDayPress={onDayPress}
           markedDates={{
             [selected]: {
               selected: true,
               disableTouchEvent: true,
               selectedColor: 'orange',
-              selectedTextColor: 'red',
-            },
+              selectedTextColor: 'red'
+            }
           }}
         />
       </Fragment>
@@ -57,6 +57,21 @@ const CalendarsScreen = () => {
     );
   };
 
+  const renderCalendarWithMinAndMaxDates = () => {
+    return (
+      <Fragment>
+        <Text style={styles.text}>Calendar with min and max dates</Text>
+        <Calendar 
+          style={styles.calendar} 
+          hideExtraDays 
+          current={'2012-05-16'}
+          minDate={'2012-05-10'}
+          maxDate={'2012-05-20'}
+        />
+      </Fragment>
+    );
+  };
+
   const renderCalendarWithMarkedDatesAndHiddenArrows = () => {
     return (
       <Fragment>
@@ -64,19 +79,47 @@ const CalendarsScreen = () => {
         <Calendar
           style={styles.calendar}
           current={'2012-05-16'}
-          minDate={'2012-05-10'}
-          maxDate={'2012-05-29'}
+          hideExtraDays
           disableAllTouchEventsForDisabledDays
           firstDay={1}
           markedDates={{
             '2012-05-23': {selected: true, marked: true, disableTouchEvent: true},
             '2012-05-24': {selected: true, marked: true, dotColor: 'red'},
-            '2012-05-25': {marked: true, dotColor: 'red'},
+            '2012-05-25': {marked: true, dotColor: 'red', disableTouchEvent: true},
             '2012-05-26': {marked: true},
-            '2012-05-27': {disabled: true, activeOpacity: 0, disableTouchEvent: false},
+            '2012-05-27': {disabled: true, activeOpacity: 0, disableTouchEvent: false}
           }}
           hideArrows={true}
           // disabledByDefault={true}
+        />
+      </Fragment>
+    );
+  };
+
+  const renderCalendarWithMultiDotMarking = () => {
+    return (
+      <Fragment>
+        <Text style={styles.text}>Calendar with multi-dot marking</Text>
+        <Calendar
+          style={styles.calendar}
+          current={'2012-05-16'}
+          markingType={'multi-dot'}
+          markedDates={{
+            '2012-05-08': {
+              selected: true,
+              dots: [
+                {key: 'vacation', color: 'blue', selectedDotColor: 'red'},
+                {key: 'massage', color: 'red', selectedDotColor: 'white'}
+              ]
+            },
+            '2012-05-09': {
+              disabled: true,
+              dots: [
+                {key: 'vacation', color: 'green', selectedDotColor: 'red'},
+                {key: 'massage', color: 'red', selectedDotColor: 'green'}
+              ]
+            }
+          }}
         />
       </Fragment>
     );
@@ -106,11 +149,12 @@ const CalendarsScreen = () => {
             // textDisabledColor: 'red',
             'stylesheet.calendar.header': {
               week: {
-                marginTop: 5,
+                marginTop: 30,
+                marginHorizontal: 12,
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-              },
-            },
+                justifyContent: 'space-between'
+              }
+            }
           }}
           markedDates={{
             '2012-05-17': {disabled: true},
@@ -121,7 +165,7 @@ const CalendarsScreen = () => {
             '2012-05-22': {endingDay: true, color: 'gray'},
             '2012-05-24': {startingDay: true, color: 'gray'},
             '2012-05-25': {color: 'gray'},
-            '2012-05-26': {endingDay: true, color: 'gray'},
+            '2012-05-26': {endingDay: true, color: 'gray'}
           }}
         />
       </Fragment>
@@ -145,8 +189,8 @@ const CalendarsScreen = () => {
               color: '#70d7c7',
               customTextStyle: {
                 color: '#FFFAAA',
-                fontWeight: '700',
-              },
+                fontWeight: '700'
+              }
             },
             '2012-05-23': {color: '#70d7c7', textColor: 'white', marked: true, dotColor: 'white'},
             '2012-05-24': {color: '#70d7c7', textColor: 'white'},
@@ -156,39 +200,10 @@ const CalendarsScreen = () => {
               textColor: 'white',
               customContainerStyle: {
                 borderTopRightRadius: 5,
-                borderBottomRightRadius: 5,
-              },
+                borderBottomRightRadius: 5
+              }
             },
-            ...getDisabledDates('2012-05-01', '2012-05-30', [0, 6]),
-          }}
-        />
-      </Fragment>
-    );
-  };
-
-  const renderCalendarWithMultiDotMarking = () => {
-    return (
-      <Fragment>
-        <Text style={styles.text}>Calendar with multi-dot marking</Text>
-        <Calendar
-          style={styles.calendar}
-          current={'2012-05-16'}
-          markingType={'multi-dot'}
-          markedDates={{
-            '2012-05-08': {
-              selected: true,
-              dots: [
-                {key: 'vacation', color: 'blue', selectedDotColor: 'red'},
-                {key: 'massage', color: 'red', selectedDotColor: 'white'},
-              ],
-            },
-            '2012-05-09': {
-              disabled: true,
-              dots: [
-                {key: 'vacation', color: 'green', selectedDotColor: 'red'},
-                {key: 'massage', color: 'red', selectedDotColor: 'green'},
-              ],
-            },
+            ...getDisabledDates('2012-05-01', '2012-05-30', [0, 6])
           }}
         />
       </Fragment>
@@ -207,23 +222,23 @@ const CalendarsScreen = () => {
             '2012-05-16': {
               periods: [
                 {startingDay: true, endingDay: false, color: 'green'},
-                {startingDay: true, endingDay: false, color: 'orange'},
-              ],
+                {startingDay: true, endingDay: false, color: 'orange'}
+              ]
             },
             '2012-05-17': {
               periods: [
                 {startingDay: false, endingDay: true, color: 'green'},
                 {startingDay: false, endingDay: true, color: 'orange'},
-                {startingDay: true, endingDay: false, color: 'pink'},
-              ],
+                {startingDay: true, endingDay: false, color: 'pink'}
+              ]
             },
             '2012-05-18': {
               periods: [
                 {startingDay: true, endingDay: true, color: 'orange'},
                 {color: 'transparent'},
-                {startingDay: false, endingDay: false, color: 'pink'},
-              ],
-            },
+                {startingDay: false, endingDay: false, color: 'pink'}
+              ]
+            }
           }}
         />
       </Fragment>
@@ -246,58 +261,58 @@ const CalendarsScreen = () => {
               customStyles: {
                 container: {
                   backgroundColor: 'white',
-                  elevation: 2,
+                  elevation: 2
                 },
                 text: {
-                  color: 'red',
-                },
-              },
+                  color: 'red'
+                }
+              }
             },
             '2018-03-08': {
-              selected: true,
+              selected: true
             },
             '2018-03-09': {
               customStyles: {
                 container: {
                   backgroundColor: 'red',
-                  elevation: 4,
+                  elevation: 4
                 },
                 text: {
-                  color: 'white',
-                },
-              },
+                  color: 'white'
+                }
+              }
             },
             '2018-03-14': {
               customStyles: {
                 container: {
-                  backgroundColor: 'green',
+                  backgroundColor: 'green'
                 },
                 text: {
-                  color: 'white',
-                },
-              },
+                  color: 'white'
+                }
+              }
             },
             '2018-03-15': {
               customStyles: {
                 container: {
                   backgroundColor: 'black',
-                  elevation: 2,
+                  elevation: 2
                 },
                 text: {
-                  color: 'yellow',
-                },
-              },
+                  color: 'yellow'
+                }
+              }
             },
             '2018-03-21': {
-              disabled: true,
+              disabled: true
             },
             '2018-03-28': {
               customStyles: {
                 text: {
                   color: 'black',
-                  fontWeight: 'bold',
-                },
-              },
+                  fontWeight: 'bold'
+                }
+              }
             },
             '2018-03-30': {
               customStyles: {
@@ -305,23 +320,23 @@ const CalendarsScreen = () => {
                   backgroundColor: 'pink',
                   elevation: 4,
                   borderColor: 'purple',
-                  borderWidth: 5,
+                  borderWidth: 5
                 },
                 text: {
                   marginTop: 3,
                   fontSize: 11,
-                  color: 'black',
-                },
-              },
+                  color: 'black'
+                }
+              }
             },
             '2018-03-31': {
               customStyles: {
                 container: {
                   backgroundColor: 'orange',
-                  borderRadius: 0,
-                },
-              },
-            },
+                  borderRadius: 0
+                }
+              }
+            }
           }}
         />
       </Fragment>
@@ -338,13 +353,13 @@ const CalendarsScreen = () => {
             {
               height: 250,
               borderBottomWidth: 1,
-              borderBottomColor: 'lightgrey',
-            },
+              borderBottomColor: 'lightgrey'
+            }
           ]}
           dayComponent={({date, state}) => {
             return (
               <View>
-                <Text style={{textAlign: 'center', color: state === 'disabled' ? 'gray' : 'black'}}>{date.day}</Text>
+                <Text style={{textAlign: 'center', color: state === 'disabled' ? 'gray' : 'purple'}}>{date.day}</Text>
               </View>
             );
           }}
@@ -364,11 +379,11 @@ const CalendarsScreen = () => {
             flexDirection: 'row',
             justifyContent: 'space-around',
             marginHorizontal: -4,
-            padding: 8,
+            padding: 8
           }}
         >
           <Text>This is a custom header!</Text>
-          <TouchableOpacity onPress={() => console.log('Tapped!')}>
+          <TouchableOpacity onPress={() => console.warn('Tapped!')}>
             <Text>Tap Me</Text>
           </TouchableOpacity>
         </View>
@@ -385,8 +400,8 @@ const CalendarsScreen = () => {
             {
               height: 250,
               borderBottomWidth: 1,
-              borderBottomColor: 'lightgrey',
-            },
+              borderBottomColor: 'lightgrey'
+            }
           ]}
           customHeader={CustomHeader}
         />
@@ -397,10 +412,11 @@ const CalendarsScreen = () => {
     <ScrollView showsVerticalScrollIndicator={false} testID={testIDs.calendars.CONTAINER}>
       {renderCalendarWithSelectableDate()}
       {renderCalendarWithWeekNumbers()}
+      {renderCalendarWithMinAndMaxDates()}
       {renderCalendarWithMarkedDatesAndHiddenArrows()}
+      {renderCalendarWithMultiDotMarking()}
       {renderCalendarWithPeriodMarkingAndSpinner()}
       {renderCalendarWithPeriodMarkingAndDotMarking()}
-      {renderCalendarWithMultiDotMarking()}
       {renderCalendarWithMultiPeriodMarking()}
       {renderCalendarWithCustomMarkingType()}
       {renderCalendarWithCustomDay()}
@@ -413,12 +429,12 @@ export default CalendarsScreen;
 
 const styles = StyleSheet.create({
   calendar: {
-    marginBottom: 10,
+    marginBottom: 10
   },
   text: {
     textAlign: 'center',
     padding: 10,
     backgroundColor: 'lightgrey',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 });
