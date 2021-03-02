@@ -56,7 +56,7 @@
     "react": "16.11.0",
     "react-component-driver": "^0.10.0",
     "react-native": "0.62.2",
-    "react-native-navigation": "^6.7.1",
+    "react-native-navigation": "^7.11.2",
     "react-test-renderer": "^17.0.1",
     "semver": "5.x.x",
     "shell-utils": "1.x.x"
